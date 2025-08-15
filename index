@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgriNest Future Leaders Portal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .hero-bg {
+            background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://images.unsplash.com/photo-1560493676-04071c5f467b?q=80&w=1974&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+        }
+        .fade-in { animation: fadeIn 1s ease-in-out forwards; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .step-card { animation: fadeIn 0.6s ease-out forwards; }
+        .dashboard-dark {
+            background-color: #1a202c;
+            color: #e2e8f0;
+        }
+        .dashboard-card {
+            background-color: #2d3748;
+            border: 1px solid #4a5568;
+        }
+        .gauge-container {
+            width: 200px;
+            height: 100px;
+            position: relative;
+            overflow: hidden;
+        }
+        .gauge-semi-circle {
+            width: 200px;
+            height: 100px;
+            border: 25px solid #4a5568;
+            border-top: none;
+            border-radius: 0 0 100px 100px;
+            position: absolute;
+            top: 0;
+        }
+        .gauge-mask {
+            width: 200px;
+            height: 100px;
+            position: absolute;
+            top: 0;
+            overflow: hidden;
+        }
+        .gauge-fill {
+            width: 200px;
+            height: 100px;
+            border: 25px solid #48bb78;
+            border-top: none;
+            border-radius: 0 0 100px 100px;
+            position: absolute;
+            top: 0;
+            transform-origin: center top;
+            transition: transform 1s ease-in-out;
+            transform: rotate(0deg);
+        }
+        .gauge-text {
+            position: absolute;
+            bottom: 5px;
+            width: 100%;
+            text-align: center;
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: #48bb78;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+    <!-- Header -->
+    <header class="bg-white shadow-sm sticky top-0 z-40">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="flex items-center">
+                 <img src="https://placehold.co/100x40/004225/FFFFFF?text=AgriNest" alt="AgriNest Logo" class="h-10 mr-4">
+                <span class="text-xl font-bold text-green-800">Future Leaders Portal</span>
+            </div>
+            <nav>
+                <a href="#" class="text-gray-600 hover:text-green-700 mx-3 font-medium">About ITC</a>
+                <a href="#" class="text-gray-600 hover:text-green-700 mx-3 font-medium">Why Agri-Business</a>
+            </nav>
+        </div>
+    </header>
+
+    <main id="main-content">
+        <!-- Hero Section -->
+        <section class="hero-bg text-white">
+            <div class="container mx-auto px-6 py-40 text-center fade-in">
+                <h1 class="text-5xl md:text-6xl font-extrabold mb-4 leading-tight">Lead the Next Wave of Indian Agriculture</h1>
+                <p class="text-xl mb-10 max-w-3xl mx-auto">A career at AgriNest is a commitment to growth—for our country, our farmers, and yourself. Are you ready to lead from the ground up?</p>
+                <a href="#assessment-start" class="bg-white text-green-700 font-bold py-4 px-10 rounded-full transition duration-300 transform hover:scale-105 text-lg shadow-lg hover:shadow-xl">Begin Assessment</a>
+            </div>
+        </section>
+
+        <!-- Assessment Section -->
+        <section id="assessment-start" class="container mx-auto px-6 py-20">
+            <div id="role-selection-section" class="max-w-xl mx-auto text-center">
+                <h2 class="text-4xl font-bold mb-4">Welcome to the AgriNest Challenge</h2>
+                <p class="text-gray-600 mb-8">To begin, please select the path that best describes you.</p>
+                <div class="flex flex-col md:flex-row gap-6 justify-center">
+                    <button onclick="selectRole('campus')" class="bg-green-700 hover:bg-green-800 text-white font-bold py-6 px-10 rounded-lg transition duration-300 text-xl w-full md:w-auto">Campus Recruit</button>
+                    <button onclick="selectRole('lateral')" class="bg-gray-700 hover:bg-gray-800 text-white font-bold py-6 px-10 rounded-lg transition duration-300 text-xl w-full md:w-auto">Lateral Hire</button>
+                </div>
+            </div>
+            
+            <div id="name-input-section" class="hidden max-w-md mx-auto bg-white p-8 rounded-xl shadow-lg fade-in mt-12">
+                <label for="candidateName" class="block text-lg font-medium text-gray-700 mb-2">Please enter your full name to continue:</label>
+                <input type="text" id="candidateName" class="w-full border-gray-300 rounded-md shadow-sm p-3 focus:ring-green-500 focus:border-green-500" placeholder="e.g., Arjun Rao">
+                <button onclick="startChallenges()" class="w-full bg-green-700 hover:bg-green-800 text-white font-bold py-3 px-4 rounded-md transition duration-300 mt-4">Start Challenges</button>
+            </div>
+            
+            <!-- Campus Recruit Cards -->
+            <div id="campus-simulation-cards" class="hidden grid md:grid-cols-3 gap-8 mt-12">
+                <div id="card-psychometric-campus" class="bg-white rounded-lg shadow-lg overflow-hidden step-card"><div class="p-6"><h3 class="text-xl font-bold my-2 text-green-800">Psychometric Test</h3><p class="text-gray-600 mb-4 h-24">A short test to understand your work style and preferences.</p><button id="btn-psychometric-campus" onclick="startSimulation('psychometric')" class="w-full bg-green-700 hover:bg-green-800 text-white font-bold py-3 px-4 rounded-full">Start Test</button></div></div>
+                <div id="card-business-sim" class="bg-white rounded-lg shadow-lg overflow-hidden step-card"><div class="p-6"><h3 class="text-xl font-bold my-2 text-green-800">Business Simulation</h3><p class="text-gray-600 mb-4 h-24">Navigate a 4-month sequential simulation.</p><button id="btn-business-sim" onclick="startSimulation('business')" class="w-full bg-green-700 hover:bg-green-800 text-white font-bold py-3 px-4 rounded-full">Play Business Sim</button></div></div>
+                <div id="card-mandi-sim" class="bg-white rounded-lg shadow-lg overflow-hidden step-card"><div class="p-6"><h3 class="text-xl font-bold my-2 text-green-800">Mandi Negotiation</h3><p class="text-gray-600 mb-4 h-24">Engage in a multi-round negotiation to procure wheat.</p><button id="btn-mandi-sim" onclick="startSimulation('mandi')" class="w-full bg-green-700 hover:bg-green-800 text-white font-bold py-3 px-4 rounded-full">Play Negotiation</button></div></div>
+            </div>
+
+            <!-- Lateral Hire Cards -->
+            <div id="lateral-simulation-cards" class="hidden grid md:grid-cols-4 gap-8 mt-12">
+                <div id="card-psychometric-lateral" class="bg-white rounded-lg shadow-lg overflow-hidden step-card"><div class="p-6"><h3 class="text-xl font-bold my-2 text-green-800">Psychometric Test</h3><p class="text-gray-600 mb-4 h-24">A short test to understand your work style and preferences.</p><button id="btn-psychometric-lateral" onclick="startSimulation('psychometric')" class="w-full bg-green-700 hover:bg-green-800 text-white font-bold py-3 px-4 rounded-full">Start Test</button></div></div>
+                <div id="card-lateral1" class="bg-white rounded-lg shadow-lg overflow-hidden step-card"><div class="p-6"><h3 class="text-xl font-bold my-2 text-green-800">Strategic Partnership</h3><p class="text-gray-600 mb-4 h-24">Evaluate and propose a partnership with an Agri-tech startup.</p><button id="btn-lateral1" onclick="startSimulation('lateral1')" class="w-full bg-green-700 hover:bg-green-800 text-white font-bold py-3 px-4 rounded-full">Start Scenario</button></div></div>
+                <div id="card-lateral2" class="bg-white rounded-lg shadow-lg overflow-hidden step-card"><div class="p-6"><h3 class="text-xl font-bold my-2 text-green-800">Divisional Strategy</h3><p class="text-gray-600 mb-4 h-24">Analyze market data and set the divisional strategy for the next fiscal year.</p><button id="btn-lateral2" onclick="startSimulation('lateral2')" class="w-full bg-green-700 hover:bg-green-800 text-white font-bold py-3 px-4 rounded-full">Start Scenario</button></div></div>
+                <div id="card-lateral3" class="bg-white rounded-lg shadow-lg overflow-hidden step-card"><div class="p-6"><h3 class="text-xl font-bold my-2 text-green-800">Crisis Management</h3><p class="text-gray-600 mb-4 h-24">Handle a sudden supply chain crisis affecting three states.</p><button id="btn-lateral3" onclick="startSimulation('lateral3')" class="w-full bg-green-700 hover:bg-green-800 text-white font-bold py-3 px-4 rounded-full">Start Scenario</button></div></div>
+            </div>
+        </section>
+    </main>
+    
+    <section id="completion-screen" class="hidden container mx-auto px-6 py-32 text-center fade-in"></section>
+    
+    <div id="dashboard-container" class="hidden"></div>
+    
+    <div id="simulationModal" class="fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center hidden z-50 p-4">
+        <div id="modalContent" class="bg-white rounded-lg shadow-xl p-8 max-w-2xl w-full transform transition-all scale-95 opacity-0"></div>
+    </div>
+    <footer class="bg-gray-800 text-white py-8"></footer>
+
+    <template id="recruiter-dashboard-template">
+        <section id="recruiter-dashboard" class="dashboard-dark py-20 px-4">
+            <div class="max-w-7xl mx-auto">
+                <div class="flex justify-between items-center border-b border-gray-600 pb-4 mb-8">
+                    <div>
+                        <h2 class="text-4xl font-bold text-white">Recruiter Analysis Dashboard</h2>
+                        <p id="candidate-name-display" class="text-xl text-gray-400"></p>
+                    </div>
+                    <button onclick="showComparisonDashboard()" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-md transition duration-300">Compare with Peers &rarr;</button>
+                </div>
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <div class="lg:col-span-1 space-y-8">
+                        <div class="dashboard-card p-6 rounded-xl">
+                            <h3 id="overall-score-title" class="text-lg font-semibold mb-4 text-gray-300 text-center">Overall Score</h3>
+                            <div class="flex justify-center">
+                                <div class="gauge-container">
+                                    <div class="gauge-semi-circle"></div>
+                                    <div class="gauge-mask"><div id="gauge-fill" class="gauge-fill"></div></div>
+                                    <div id="stickiness-score" class="gauge-text">0</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="dashboard-card p-6 rounded-xl">
+                            <h3 class="text-lg font-semibold mb-2 text-gray-300">Candidate Persona</h3>
+                            <p id="candidate-persona" class="text-2xl font-bold text-green-400"></p>
+                        </div>
+                        <div class="dashboard-card p-6 rounded-xl">
+                            <h3 class="text-lg font-semibold mb-2 text-gray-300">Trait Analysis</h3>
+                            <div id="trait-analysis"></div>
+                        </div>
+                    </div>
+                    <div class="lg:col-span-2 space-y-8">
+                         <div class="dashboard-card p-6 rounded-xl">
+                            <h3 class="text-lg font-semibold mb-4 text-gray-300 text-center">Competency Profile</h3>
+                            <canvas id="competencyChart"></canvas>
+                        </div>
+                        <div class="dashboard-card p-6 rounded-xl">
+                            <h3 class="text-lg font-semibold mb-2 text-gray-300">Suggested Interview Questions</h3>
+                            <ul id="interview-questions" class="list-disc list-inside space-y-2 text-gray-400"></ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section id="comparison-dashboard" class="hidden dashboard-dark py-20 px-4">
+             <div class="max-w-7xl mx-auto">
+                <div class="flex justify-between items-center border-b border-gray-600 pb-4 mb-8">
+                    <div>
+                        <h2 class="text-3xl font-bold text-white">Peer Comparison Analysis</h2>
+                        <p id="candidate-name-display-comp" class="text-xl text-gray-400"></p>
+                    </div>
+                    <button onclick="showProfileDashboard()" class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded-md transition duration-300">&larr; Back to Profile</button>
+                </div>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+                    <div class="dashboard-card p-6 rounded-xl"><h3 class="text-xl font-semibold mb-4 text-center text-gray-300">Overall Score vs. Peer Average</h3><canvas id="overallScoreChart"></canvas></div>
+                    <div class="dashboard-card p-6 rounded-xl"><h3 class="text-xl font-semibold mb-4 text-center text-gray-300">Competency Comparison</h3><canvas id="competencyComparisonChart"></canvas></div>
+                </div>
+                <h3 class="text-2xl font-bold mb-6 text-center text-white">Detailed Competency Rankings</h3>
+                <div id="rankings-grid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-6">
+                </div>
+            </div>
+        </section>
+    </template>
+
+    <script>
+    // --- STATE MANAGEMENT & DATA ---
+    let gameState = {};
+    const businessSimScenarios = ['month1', 'month2', 'month3', 'month4'];
+    let currentBusinessSimStep = 0;
+    let currentMandiRound = 0;
+    let currentPsychometricStep = 0;
+    let peerData = [];
+
+    function generatePeerData(count, type = 'campus') {
+        const data = [];
+        for (let i = 0; i < count; i++) {
+            let scores;
+            if (type === 'campus') {
+                scores = { negotiation: Math.floor(Math.random() * 80) + 20, ruralAffinity: Math.floor(Math.random() * 20), longTermPerspective: Math.floor(Math.random() * 50), proactiveOwnership: Math.floor(Math.random() * 30), groundedExpectations: Math.floor(Math.random() * 40) };
+            } else { // lateral
+                scores = { strategicVision: Math.floor(Math.random() * 35), businessAcumen: Math.floor(Math.random() * 30), leadership: Math.floor(Math.random() * 15), crisisManagement: Math.floor(Math.random() * 20) };
+            }
+            data.push({ name: `Candidate ${i + 1}`, scores });
+        }
+        return data;
+    }
+
+    function resetGameState() {
+        gameState = {
+            candidateName: '',
+            candidateType: null,
+            scores: {},
+            behavioralNotes: {},
+            completed: {},
+        };
+        currentBusinessSimStep = 0;
+        currentMandiRound = 0;
+        currentPsychometricStep = 0;
+    }
+
+    window.onload = () => {
+        resetGameState();
+        document.querySelector('footer').innerHTML = `<div class="container mx-auto px-6 text-center"><p>&copy; ${new Date().getFullYear()} ITC Agri-Business. All Rights Reserved.</p></div>`;
+    };
+    
+    // --- DOM ELEMENTS ---
+    const modal = document.getElementById('simulationModal');
+    const modalContent = document.getElementById('modalContent');
+
+    function selectRole(type) {
+        gameState.candidateType = type;
+        document.getElementById('role-selection-section').classList.add('hidden');
+        document.getElementById('name-input-section').classList.remove('hidden');
+    }
+
+    function startChallenges() {
+        const nameInput = document.getElementById('candidateName');
+        if (nameInput.value.trim() === '') { showCustomAlert('Please enter your name.'); return; }
+        gameState.candidateName = nameInput.value.trim();
+        document.getElementById('name-input-section').classList.add('hidden');
+        
+        if (gameState.candidateType === 'campus') {
+            gameState.scores = { negotiation: 0, ruralAffinity: 0, longTermPerspective: 0, proactiveOwnership: 0, groundedExpectations: 0 };
+            gameState.completed = { psychometric: false, business: false, mandi: false };
+            document.getElementById('campus-simulation-cards').classList.remove('hidden');
+        } else {
+            gameState.scores = { strategicVision: 0, businessAcumen: 0, leadership: 0, crisisManagement: 0 };
+            gameState.completed = { psychometric: false, lateral1: false, lateral2: false, lateral3: false };
+            document.getElementById('lateral-simulation-cards').classList.remove('hidden');
+        }
+    }
+    
+    // --- SIMULATION LOGIC ---
+    function startSimulation(simType) {
+        let content = '';
+        if (simType === 'psychometric') {
+            currentPsychometricStep = 1;
+            content = getScenarioContent('psychometric1');
+        } else if (simType === 'business') {
+            content = getScenarioContent(businessSimScenarios[currentBusinessSimStep]);
+        } else if (simType === 'mandi') {
+            if (currentMandiRound === 0) currentMandiRound = 1;
+            content = getScenarioContent(`mandi_round${currentMandiRound}`);
+        } else if (simType.startsWith('lateral')) {
+            content = getScenarioContent(simType);
+        }
+        modalContent.innerHTML = content;
+        openModal();
+    }
+
+    function getScenarioContent(scenario) {
+        // Psychometric Questions (shared)
+        const psychometricQuestions = {
+            'psychometric1': `<h2 class="text-2xl font-bold mb-4">Psychometric Test (1/5)</h2><p class="mb-6 text-gray-600">Which of these weekend activities sounds most appealing after a long work week?</p><div class="space-y-3"><button onclick="makeDecision('psychometric1', { ruralAffinity: 5 })" class="w-full text-left p-3 bg-gray-100 hover:bg-green-100">A) Exploring a new hiking trail in a nearby forest.</button><button onclick="makeDecision('psychometric1', { ruralAffinity: -2 })" class="w-full text-left p-3 bg-gray-100 hover:bg-green-100">B) Attending a large concert in a stadium.</button><button onclick="makeDecision('psychometric1', { ruralAffinity: 0 })" class="w-full text-left p-3 bg-gray-100 hover:bg-green-100">C) Relaxing at home with a book or movie.</button></div>`,
+            'psychometric2': `<h2 class="text-2xl font-bold mb-4">Psychometric Test (2/5)</h2><p class="mb-6 text-gray-600">When faced with an unexpected, complex problem, your first instinct is to:</p><div class="space-y-3"><button onclick="makeDecision('psychometric2', { proactiveOwnership: 5 })" class="w-full text-left p-3 bg-gray-100 hover:bg-green-100">A) Break it down into smaller parts and tackle them one by one.</button><button onclick="makeDecision('psychometric2', { proactiveOwnership: 0 })" class="w-full text-left p-3 bg-gray-100 hover:bg-green-100">B) Consult with your superior for clear instructions.</button><button onclick="makeDecision('psychometric2', { proactiveOwnership: 2 })" class="w-full text-left p-3 bg-gray-100 hover:bg-green-100">C) Research how others have solved similar problems.</button></div>`,
+            'psychometric3': `<h2 class="text-2xl font-bold mb-4">Psychometric Test (3/5)</h2><p class="mb-6 text-gray-600">You find building long-term professional relationships to be:</p><div class="space-y-3"><button onclick="makeDecision('psychometric3', { longTermPerspective: 5 })" class="w-full text-left p-3 bg-gray-100 hover:bg-green-100">A) A key component of career success.</button><button onclick="makeDecision('psychometric3', { longTermPerspective: 0 })" class="w-full text-left p-3 bg-gray-100 hover:bg-green-100">B) Useful, but secondary to achieving immediate results.</button><button onclick="makeDecision('psychometric3', { longTermPerspective: -2 })" class="w-full text-left p-3 bg-gray-100 hover:bg-green-100">C) Often a distraction from the main task.</button></div>`,
+            'psychometric4': `<h2 class="text-2xl font-bold mb-4">Psychometric Test (4/5)</h2><p class="mb-6 text-gray-600">Which work environment do you find more motivating?</p><div class="space-y-3"><button onclick="makeDecision('psychometric4', { ruralAffinity: -2, groundedExpectations: -2 })" class="w-full text-left p-3 bg-gray-100 hover:bg-green-100">A) A fast-paced, competitive environment with frequent public recognition.</button><button onclick="makeDecision('psychometric4', { ruralAffinity: 5, groundedExpectations: 5 })" class="w-full text-left p-3 bg-gray-100 hover:bg-green-100">B) A collaborative, stable environment focused on steady, impactful progress.</button><button onclick="makeDecision('psychometric4', { ruralAffinity: 0, groundedExpectations: 0 })" class="w-full text-left p-3 bg-gray-100 hover:bg-green-100">C) A highly autonomous environment where you can work independently.</button></div>`,
+            'psychometric5': `<h2 class="text-2xl font-bold mb-4">Psychometric Test (5/5)</h2><p class="mb-6 text-gray-600">When thinking about your career, you are most drawn to:</p><div class="space-y-3"><button onclick="makeDecision('psychometric5', { longTermPerspective: -2 })" class="w-full text-left p-3 bg-gray-100 hover:bg-green-100">A) Rapidly climbing the ladder to gain a leadership title.</button><button onclick="makeDecision('psychometric5', { longTermPerspective: 5 })" class="w-full text-left p-3 bg-gray-100 hover:bg-green-100">B) Gaining deep expertise and becoming a respected specialist in your field.</button><button onclick="makeDecision('psychometric5', { longTermPerspective: 0 })" class="w-full text-left p-3 bg-gray-100 hover:bg-green-100">C) Finding a role that offers a good work-life balance.</button></div>`,
+        };
+        if (psychometricQuestions[scenario]) return psychometricQuestions[scenario];
+
+        // Campus Recruit Questions
+        const campusScenarios = {
+            'month1': `<h2 class="text-2xl font-bold mb-4">Business Sim (1/4): Seed Distribution</h2><p class="mb-6 text-gray-600">A new, high-yield seed variety has arrived, but local farmers in your district, who have faced losses from failed "miracle seeds" in the past, are highly skeptical. Your target is 25% adoption in the first season. How do you build trust and ensure adoption?</p><div class="space-y-3"><button onclick="makeDecision('month1', { ruralAffinity: 5, proactiveOwnership: 10 }, 'A')" class="w-full text-left p-3 bg-gray-100 hover:bg-green-100 rounded-lg">A) Launch a large-scale marketing campaign with posters and pamphlets highlighting the scientific data and offer a steep introductory discount to drive initial sales.</button><button onclick="makeDecision('month1', { ruralAffinity: 20, longTermPerspective: 5 }, 'B')" class="w-full text-left p-3 bg-gray-100 hover:bg-green-100 rounded-lg">B) Partner with a respected village elder. Offer them seeds for a small demonstration plot and co-host a 'field day' for other farmers to see the results firsthand, building community trust.</button><button onclick="makeDecision('month1', { ruralAffinity: 0, proactiveOwnership: 0 }, 'C')" class="w-full text-left p-3 bg-gray-100 hover:bg-green-100 rounded-lg">C) Follow the standard procedure of distributing the seeds to local vendors. Report the low adoption rates to your manager and wait for further instructions.</button></div>`,
+            'month2': `<h2 class="text-2xl font-bold mb-4">Business Sim (2/4): Data Collection Initiative</h2><p class="mb-6 text-gray-600">You notice your team spends two days a week manually entering procurement data, leading to delays and errors. This is a long-standing issue everyone accepts. This is not your core responsibility, but it's impacting your district's performance. What do you do?</p><div class="space-y-3"><button onclick="makeDecision('month2', { proactiveOwnership: 0, groundedExpectations: 5 }, 'A')" class="w-full text-left p-3 bg-gray-100 hover:bg-green-100 rounded-lg">A) Ignore it. It's not part of your job description, and fixing systemic issues is above your pay grade. Focus on your own targets.</button><button onclick="makeDecision('month2', { proactiveOwnership: 20, longTermPerspective: 10 }, 'B')" class="w-full text-left p-3 bg-gray-100 hover:bg-green-100 rounded-lg">B) Voluntarily research a simple, free mobile app for data entry. You create a small pilot program with two team members to demonstrate a 50% time saving and present a formal proposal to your manager.</button><button onclick="makeDecision('month2', { proactiveOwnership: 2, groundedExpectations: 0 }, 'C')" class="w-full text-left p-3 bg-gray-100 hover:bg-green-100 rounded-lg">C) Send an email to your manager stating that the data entry process is inefficient and is a problem for the team, then wait for their direction.</button></div>`,
+            'month3': `<h2 class="text-2xl font-bold mb-4">Business Sim (3/4): Managing Team Morale</h2><p class="mb-6 text-gray-600">Your most promising team member, a recent campus hire, is visibly demotivated. They tell you their friends at startups are already getting promotions and significant pay bumps, while they feel stagnant in their rural posting. How do you handle this critical conversation?</p><div class="space-y-3"><button onclick="makeDecision('month3', { longTermPerspective: 0, groundedExpectations: 0 }, 'A')" class="w-full text-left p-3 bg-gray-100 hover:bg-green-100 rounded-lg">A) Tell them that this is the reality of working in a large, established company and that they need to be patient and wait their turn for promotion.</button><button onclick="makeDecision('month3', { longTermPerspective: 5, groundedExpectations: 5 }, 'B')" class="w-full text-left p-3 bg-gray-100 hover:bg-green-100 rounded-lg">B) To keep them happy, you promise to escalate their case to HR for a special, out-of-cycle promotion, even though you know it is highly unlikely to be approved.</button><button onclick="makeDecision('month3', { longTermPerspective: 15, groundedExpectations: 15 }, 'C')" class="w-full text-left p-3 bg-gray-100 hover:bg-green-100 rounded-lg">C) Acknowledge their frustration and validate their feelings. You then map out their potential 5-year growth path at ITC, highlighting the deep operational experience they are gaining which will be invaluable for senior roles.</button></div>`,
+            'month4': `<h2 class="text-2xl font-bold mb-4">Business Sim (4/4): The Career Crossroad</h2><p class="mb-6 text-gray-600">Impressed by your pilot project, an agri-tech startup offers you a 'Senior Product Manager' role with a 40% salary hike, located in Bangalore. You've been with ITC for 18 months. Reflecting on your experiences, what is your move?</p><div class="space-y-3"><button onclick="makeDecision('month4', { longTermPerspective: 0, groundedExpectations: 5 }, 'A')" class="w-full text-left p-3 bg-gray-100 hover:bg-green-100 rounded-lg">A) Accept the offer immediately. The title and salary are a significant jump, and it gets you out of a rural posting and into the fast-paced tech world.</button><button onclick="makeDecision('month4', { longTermPerspective: 2, groundedExpectations: 0 }, 'B')" class="w-full text-left p-3 bg-gray-100 hover:bg-green-100 rounded-lg">B) Use the offer as leverage. Email your manager with the offer details and ask them to match the salary and title, otherwise you will have to accept it.</button><button onclick="makeDecision('month4', { longTermPerspective: 20, groundedExpectations: 20 }, 'C')" class="w-full text-left p-3 bg-gray-100 hover:bg-green-100 rounded-lg">C) Thank them for the offer. Schedule a formal meeting with your manager to discuss your career ambitions and present your data project's success, seeking clarity on your future within ITC before making a final decision.</button></div>`,
+            'mandi_round1': `<h2 class="text-2xl font-bold mb-4">Mandi Negotiation (1/3)</h2><p class="mb-4 text-gray-600">A trusted farmer, Ramesh, offers 100 quintals of high-quality wheat. The official market price is ₹2,125/q. Ramesh, citing high input costs, asks for ₹2,250/q. You know his quality is reliable. What is your opening offer to start the negotiation?</p><div class="flex items-center space-x-4"><label for="offerPrice" class="font-medium">Your Offer (₹):</label><input type="number" id="offerPrice" class="border rounded p-2 w-full" placeholder="e.g., 2050 - 2100"><button onclick="makeMandiOffer()" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-6 rounded-full">Submit</button></div>`,
+            'mandi_round2': `<h2 class="text-2xl font-bold mb-4">Mandi Negotiation (2/3)</h2><p class="mb-4 text-gray-600">Ramesh sighs. "That's a bit low, sir. My costs for fertilizer were very high this season. I heard your competitor is offering ₹2,150 for slightly lower quality. For you, because of our long relationship, I can do ₹2,175." What is your counter-offer?</p><div class="flex items-center space-x-4"><label for="offerPrice" class="font-medium">Your Offer (₹):</label><input type="number" id="offerPrice" class="border rounded p-2 w-full" placeholder="e.g., 2120 - 2140"><button onclick="makeMandiOffer()" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-6 rounded-full">Counter</button></div>`,
+            'mandi_round3': `<h2 class="text-2xl font-bold mb-4">Mandi Negotiation (Final Round)</h2><p class="mb-4 text-gray-600">"Okay, sir, my final price," he says firmly. "₹2,140. But I need a promise that you will prioritize buying my next soybean harvest as well. It gives my family security." How do you close this critical deal?</p><div class="space-y-3"><button onclick="makeMandiOffer(2140, true)" class="w-full text-left p-3 bg-gray-100 hover:bg-green-100 rounded-lg">Accept Deal: Agree to ₹2,140 and verbally commit to prioritizing his next harvest, strengthening the long-term relationship.</button><button onclick="makeMandiOffer(2125, false)" class="w-full text-left p-3 bg-gray-100 hover:bg-green-100 rounded-lg">Hold Firm: State you can only pay the market price of ₹2,125 and cannot make future promises, focusing purely on the current transaction.</button><button onclick="makeMandiOffer(0, false)" class="w-full text-left p-3 bg-gray-100 hover:bg-green-100 rounded-lg">Walk Away: The price is too high and the added condition is risky. Politely decline and seek other sellers.</button></div>`,
+        };
+        if (campusScenarios[scenario]) return campusScenarios[scenario];
+
+        // Lateral Hire Scenarios
+        const lateralScenarios = {
+            'lateral1': `<h2 class="text-2xl font-bold mb-4">Lateral Sim (1/3): Strategic Partnership</h2><p class="mb-6 text-gray-600">An Agri-tech startup proposes a JV to digitize your supply chain, promising 20% efficiency gains but requiring a significant upfront investment and sharing of proprietary data. How do you proceed?</p><div class="space-y-3"><button onclick="makeDecision('lateral1', { strategicVision: 20, businessAcumen: 10 }, 'B')" class="w-full text-left p-3 bg-gray-100 hover:bg-green-100 rounded-lg">B) Propose a smaller, phased pilot project in one district to validate their claims and build trust before a full-scale rollout.</button><button onclick="makeDecision('lateral1', { strategicVision: 5, businessAcumen: -5 }, 'A')" class="w-full text-left p-3 bg-gray-100 hover:bg-green-100 rounded-lg">A) Reject the proposal outright; the risk of sharing data with a startup is too high.</button><button onclick="makeDecision('lateral1', { strategicVision: 10, businessAcumen: 5 }, 'C')" class="w-full text-left p-3 bg-gray-100 hover:bg-green-100 rounded-lg">C) Accept the proposal as presented to rapidly gain a competitive advantage.</button></div>`,
+            'lateral2': `<h2 class="text-2xl font-bold mb-4">Lateral Sim (2/3): Divisional Strategy</h2><p class="mb-6 text-gray-600">You are tasked with setting the 3-year strategy for your division. Market data shows high growth in value-added spices but lower margins, while traditional grains are low-growth but highly profitable. Where do you allocate the majority of your capital?</p><div class="space-y-3"><button onclick="makeDecision('lateral2', { businessAcumen: 20, strategicVision: 15 }, 'C')" class="w-full text-left p-3 bg-gray-100 hover:bg-green-100 rounded-lg">C) A balanced approach: Allocate 60% to grains to protect the cash cow and 40% to spices to invest in future growth, creating a diversified portfolio.</button><button onclick="makeDecision('lateral2', { businessAcumen: 10, strategicVision: 5 }, 'A')" class="w-full text-left p-3 bg-gray-100 hover:bg-green-100 rounded-lg">A) Allocate 80% to traditional grains to maximize short-term profitability and shareholder returns.</button><button onclick="makeDecision('lateral2', { businessAcumen: 5, strategicVision: 20 }, 'B')" class="w-full text-left p-3 bg-gray-100 hover:bg-green-100 rounded-lg">B) Allocate 80% to value-added spices to capture market share in a high-growth area, accepting lower initial profits.</button></div>`,
+            'lateral3': `<h2 class="text-2xl font-bold mb-4">Lateral Sim (3/3): Crisis Management</h2><p class="mb-6 text-gray-600">A sudden transport strike has halted all movement of goods in three key states, threatening your ability to fulfill major export orders. This will have significant financial and reputational impact. What is your immediate, decisive action?</p><div class="space-y-3"><button onclick="makeDecision('lateral3', { crisisManagement: 20, leadership: 15 }, 'A')" class="w-full text-left p-3 bg-gray-100 hover:bg-green-100 rounded-lg">A) Immediately form a cross-functional crisis team, empower them to explore alternative logistics (rail, smaller vehicles), and proactively communicate potential delays to key clients.</button><button onclick="makeDecision('lateral3', { crisisManagement: 0, leadership: 0 }, 'B')" class="w-full text-left p-3 bg-gray-100 hover:bg-green-100 rounded-lg">B) Wait for the strike to resolve. It's an external factor beyond your control, and any action would be too costly.</button><button onclick="makeDecision('lateral3', { crisisManagement: 5, leadership: 5 }, 'C')" class="w-full text-left p-3 bg-gray-100 hover:bg-green-100 rounded-lg">C) Escalate the issue to the executive board and wait for their top-down directive on how to proceed.</button></div>`,
+        };
+        if (lateralScenarios[scenario]) return lateralScenarios[scenario];
+    }
+
+    function makeDecision(simType, scores, choice) {
+        Object.keys(scores).forEach(key => {
+            if (gameState.scores.hasOwnProperty(key)) {
+                gameState.scores[key] += scores[key];
+            }
+        });
+
+        if (simType.startsWith('psychometric')) {
+            currentPsychometricStep++;
+            if (currentPsychometricStep > 5) {
+                endGame('psychometric');
+            } else {
+                modalContent.innerHTML = getScenarioContent(`psychometric${currentPsychometricStep}`);
+            }
+            return;
+        }
+        
+        if (gameState.candidateType === 'campus') {
+            const notes = { 'month1': { 'A': "Tends towards a corporate, top-down approach.", 'B': "Values relationship-building.", 'C': "Shows low initiative." }, 'month2': { 'A': "Lacks intrinsic motivation.", 'B': "Exhibits high proactive ownership.", 'C': "Prefers waiting for direction." }, 'month3': { 'A': "Dismissive of team concerns.", 'B': "May make unrealistic promises.", 'C': "Balances empathy with company reality." }, 'month4': { 'A': "Motivated by short-term gains.", 'B': "Views career as transactional.", 'C': "Displays maturity and long-term perspective." } };
+            gameState.behavioralNotes[simType] = notes[simType][choice];
+            currentBusinessSimStep++;
+            if (currentBusinessSimStep >= businessSimScenarios.length) endGame('business');
+            else startSimulation('business');
+        } else { // Lateral
+            const notes = { 'lateral1': { 'A': "Risk-averse, may miss opportunities.", 'B': "Pragmatic and strategic, balances risk with reward.", 'C': "Potentially impulsive, overlooks due diligence." }, 'lateral2': { 'A': "Overly focused on short-term profits.", 'B': "High-risk, 'growth-at-all-costs' mindset.", 'C': "Demonstrates balanced, portfolio-based strategic thinking." }, 'lateral3': { 'A': "Decisive, proactive, and demonstrates leadership.", 'B': "Passive and indecisive under pressure.", 'C': "Overly reliant on hierarchy, lacks initiative." } };
+            gameState.behavioralNotes[simType] = notes[simType][choice];
+            endGame(simType);
+        }
+    }
+
+    function makeMandiOffer(finalPrice = null, acceptedPromise = null) {
+        if (finalPrice !== null) {
+            if (finalPrice === 0) { gameState.scores.negotiation = 20; gameState.behavioralNotes.mandi = "Missed opportunity by walking away from a viable deal."; }
+            else if (acceptedPromise) { gameState.scores.negotiation = 100; gameState.behavioralNotes.mandi = "Excellent outcome: Secured a good price by using a non-monetary incentive."; }
+            else { gameState.scores.negotiation = 60; gameState.behavioralNotes.mandi = "Secured an average price but missed a relationship-building opportunity."; }
+            endGame('mandi');
+            return;
+        }
+        
+        const offer = parseInt(document.getElementById('offerPrice').value);
+        if (!offer) { showCustomAlert("Please enter a valid offer."); return; }
+
+        currentMandiRound++;
+        startSimulation('mandi');
+    }
+
+    function endGame(simType) {
+        gameState.completed[simType] = true;
+        
+        if (simType === 'psychometric') {
+            if (gameState.candidateType === 'campus') {
+                document.getElementById('card-psychometric-campus').classList.add('opacity-60');
+                document.getElementById('btn-psychometric-campus').disabled = true;
+                document.getElementById('btn-psychometric-campus').innerText = 'Completed';
+            } else {
+                document.getElementById('card-psychometric-lateral').classList.add('opacity-60');
+                document.getElementById('btn-psychometric-lateral').disabled = true;
+                document.getElementById('btn-psychometric-lateral').innerText = 'Completed';
+            }
+        } else {
+            const buttonId = simType.startsWith('lateral') ? `btn-${simType}` : (simType === 'business' ? 'btn-business-sim' : 'btn-mandi-sim');
+            const cardId = simType.startsWith('lateral') ? `card-${simType}` : (simType === 'business' ? 'card-business-sim' : 'card-mandi-sim');
+            const button = document.getElementById(buttonId);
+            const card = document.getElementById(cardId);
+            if (button) {
+                button.disabled = true;
+                button.innerText = 'Completed';
+            }
+            if(card) {
+                card.classList.add('opacity-60');
+            }
+        }
+
+        closeModal();
+        if (Object.values(gameState.completed).every(status => status)) showCompletionScreen();
+    }
+
+    function showCompletionScreen() {
+        document.getElementById('main-content').classList.add('hidden');
+        document.getElementById('completion-screen').innerHTML = `<h2 class="text-4xl font-bold text-green-800 mb-4">Thank You, ${gameState.candidateName}</h2><p class="text-gray-600 text-lg max-w-2xl mx-auto">Your responses have been recorded. Our recruitment team will be in touch regarding the next steps.</p>`;
+        document.getElementById('completion-screen').classList.remove('hidden');
+        setTimeout(showProfileDashboard, 1000);
+    }
+
+    // --- DASHBOARD LOGIC ---
+    let charts = {};
+    function destroyCharts() { Object.values(charts).forEach(chart => chart.destroy()); charts = {}; }
+    
+    function showProfileDashboard() {
+        destroyCharts();
+        const container = document.getElementById('dashboard-container');
+        container.innerHTML = document.getElementById('recruiter-dashboard-template').innerHTML;
+        container.classList.remove('hidden');
+        document.getElementById('recruiter-dashboard').classList.remove('hidden');
+        document.getElementById('comparison-dashboard').classList.add('hidden');
+        
+        document.getElementById('candidate-name-display').innerText = `Profile for: ${gameState.candidateName}`;
+        
+        if (gameState.candidateType === 'campus') {
+            renderCampusDashboard();
+        } else {
+            renderLateralDashboard();
+        }
+    }
+
+    function renderCampusDashboard() {
+        document.getElementById('overall-score-title').innerText = 'Overall Stickiness Score';
+        const maxScores = { negotiation: 100, ruralAffinity: 20, longTermPerspective: 50, proactiveOwnership: 30, groundedExpectations: 40 };
+        const finalScores = {};
+        let totalScore = 0, maxTotal = 0;
+        for (const key in gameState.scores) {
+            if (key === 'negotiation') continue;
+            finalScores[key] = (gameState.scores[key] / maxScores[key]) * 100;
+            totalScore += gameState.scores[key];
+            maxTotal += maxScores[key];
+        }
+        const stickiness = Math.min(100, (totalScore / maxTotal) * 100);
+        document.getElementById('stickiness-score').innerText = `${stickiness.toFixed(0)}`;
+        document.getElementById('gauge-fill').style.transform = `rotate(${stickiness * 1.8}deg)`;
+        
+        let persona = "Balanced Professional";
+        if (stickiness > 80) persona = "Pragmatic Operator";
+        if (finalScores.ruralAffinity > 80 && finalScores.longTermPerspective > 80) persona = "Community Builder";
+        if (stickiness < 40) persona = "Ambitious Sprinter";
+        document.getElementById('candidate-persona').innerText = persona;
+
+        const traitEl = document.getElementById('trait-analysis');
+        let positiveTraits = [], redFlags = [];
+        const notes = gameState.behavioralNotes;
+        if (notes.month1 === "Values relationship-building.") positiveTraits.push(notes.month1); else redFlags.push(notes.month1);
+        if (notes.month2 === "Exhibits high proactive ownership.") positiveTraits.push(notes.month2); else redFlags.push(notes.month2);
+        if (notes.month3 === "Balances empathy with company reality.") positiveTraits.push(notes.month3); else redFlags.push(notes.month3);
+        if (notes.month4 === "Displays maturity and long-term perspective.") positiveTraits.push(notes.month4); else redFlags.push(notes.month4);
+        traitEl.innerHTML = `<div><h4 class="font-semibold text-green-400">Positive Indicators:</h4><ul class="list-disc list-inside text-gray-300">${positiveTraits.map(t => `<li>${t}</li>`).join('')}</ul></div><div class="mt-4"><h4 class="font-semibold text-red-400">Potential Red Flags:</h4><ul class="list-disc list-inside text-gray-300">${redFlags.map(t => `<li>${t}</li>`).join('')}</ul></div>`;
+
+        const questionsEl = document.getElementById('interview-questions');
+        questionsEl.innerHTML = '';
+        if(finalScores.groundedExpectations < 50) questionsEl.innerHTML += `<li>"Describe a time you worked on a long project with little recognition. How did you stay motivated?"</li>`;
+        if(finalScores.ruralAffinity < 50) questionsEl.innerHTML += `<li>"What aspects of a rural posting do you find most challenging, and which would you find most rewarding?"</li>`;
+        if(finalScores.proactiveOwnership < 50) questionsEl.innerHTML += `<li>"Tell me about a time you identified a problem that was outside your direct responsibility. What did you do?"</li>`;
+        if(questionsEl.innerHTML === '') questionsEl.innerHTML = '<li>Candidate shows balanced traits. Probe on leadership experiences and handling ambiguity.</li>';
+
+        charts.competencyChart = new Chart(document.getElementById('competencyChart').getContext('2d'), {
+            type: 'radar',
+            data: {
+                labels: ['Rural Affinity', 'Long-Term View', 'Ownership', 'Expectations', 'Negotiation'],
+                datasets: [{
+                    label: 'Competency Score',
+                    data: [finalScores.ruralAffinity, finalScores.longTermPerspective, finalScores.proactiveOwnership, finalScores.groundedExpectations, (gameState.scores.negotiation/maxScores.negotiation)*100],
+                    backgroundColor: 'rgba(72, 187, 120, 0.2)', borderColor: 'rgba(72, 187, 120, 1)', borderWidth: 2
+                }]
+            },
+            options: { scales: { r: { suggestedMin: 0, suggestedMax: 100, pointLabels: { color: '#a0aec0', font: {size: 14}}, grid: { color: '#4a5568' }, angleLines: { color: '#4a5568' } } }, plugins: { legend: { display: false } } }
+        });
+    }
+
+    function renderLateralDashboard() {
+        document.getElementById('overall-score-title').innerText = 'Leadership Potential Score';
+        const maxScores = { strategicVision: 35, businessAcumen: 30, leadership: 15, crisisManagement: 20 };
+        const finalScores = {};
+        let totalScore = 0, maxTotal = 0;
+        for (const key in gameState.scores) {
+            if (maxScores[key]) {
+                finalScores[key] = (gameState.scores[key] / maxScores[key]) * 100;
+                totalScore += gameState.scores[key];
+                maxTotal += maxScores[key];
+            }
+        }
+        const leadershipPotential = Math.min(100, (totalScore / maxTotal) * 100);
+        document.getElementById('stickiness-score').innerText = `${leadershipPotential.toFixed(0)}`;
+        document.getElementById('gauge-fill').style.transform = `rotate(${leadershipPotential * 1.8}deg)`;
+        
+        let persona = "Balanced Strategist";
+        if (leadershipPotential > 80) persona = "Visionary Leader";
+        if (finalScores.crisisManagement > 80 && finalScores.businessAcumen > 80) persona = "Decisive Operator";
+        if (leadershipPotential < 40) persona = "Cautious Manager";
+        document.getElementById('candidate-persona').innerText = persona;
+
+        const traitEl = document.getElementById('trait-analysis');
+        traitEl.innerHTML = `<div><h4 class="font-semibold text-green-400">Indicators:</h4><ul class="list-disc list-inside text-gray-300">${Object.values(gameState.behavioralNotes).map(t => `<li>${t}</li>`).join('')}</ul></div>`;
+
+        const questionsEl = document.getElementById('interview-questions');
+        questionsEl.innerHTML = '';
+        if(finalScores.strategicVision < 50) questionsEl.innerHTML += `<li>"Describe a time you had to develop a long-term strategy with incomplete information. What was your process?"</li>`;
+        if(finalScores.crisisManagement < 50) questionsEl.innerHTML += `<li>"Walk me through a high-stakes crisis you had to manage. What were your immediate priorities?"</li>`;
+        if(questionsEl.innerHTML === '') questionsEl.innerHTML = '<li>Candidate appears solid. Probe on experience managing large teams and P&L responsibilities.</li>';
+
+        charts.competencyChart = new Chart(document.getElementById('competencyChart').getContext('2d'), {
+            type: 'radar',
+            data: {
+                labels: ['Strategic Vision', 'Business Acumen', 'Leadership', 'Crisis Management'],
+                datasets: [{
+                    label: 'Competency Score',
+                    data: [finalScores.strategicVision, finalScores.businessAcumen, finalScores.leadership, finalScores.crisisManagement],
+                    backgroundColor: 'rgba(72, 187, 120, 0.2)', borderColor: 'rgba(72, 187, 120, 1)', borderWidth: 2
+                }]
+            },
+            options: { scales: { r: { suggestedMin: 0, suggestedMax: 100, pointLabels: { color: '#a0aec0', font: {size: 14}}, grid: { color: '#4a5568' }, angleLines: { color: '#4a5568' } } }, plugins: { legend: { display: false } } }
+        });
+    }
+
+
+    function showComparisonDashboard() {
+        destroyCharts();
+        document.getElementById('recruiter-dashboard').classList.add('hidden');
+        document.getElementById('comparison-dashboard').classList.remove('hidden');
+        document.getElementById('candidate-name-display-comp').innerText = `Comparing: ${gameState.candidateName}`;
+        
+        let maxScores, competencyLabels;
+        if (gameState.candidateType === 'campus') {
+            maxScores = { negotiation: 100, ruralAffinity: 20, longTermPerspective: 50, proactiveOwnership: 30, groundedExpectations: 40 };
+            competencyLabels = ['Negotiation', 'Rural Affinity', 'Long-Term View', 'Ownership', 'Expectations'];
+        } else {
+            maxScores = { strategicVision: 35, businessAcumen: 30, leadership: 15, crisisManagement: 20 };
+            competencyLabels = ['Strategic Vision', 'Business Acumen', 'Leadership', 'Crisis Management'];
+        }
+
+        peerData = generatePeerData(74, gameState.candidateType);
+        const fullCandidateData = [...peerData, { name: gameState.candidateName, scores: gameState.scores }];
+        const normalizedData = fullCandidateData.map(c => {
+            const normScores = {};
+            for (const key in c.scores) { normScores[key] = (c.scores[key] / (maxScores[key] || 1)) * 100; }
+            return { name: c.name, scores: normScores };
+        });
+
+        const candidateNorm = normalizedData.find(c => c.name === gameState.candidateName);
+        const peersNorm = normalizedData.filter(c => c.name !== gameState.candidateName);
+        const peerAverages = {};
+        for (const key in maxScores) { peerAverages[key] = peersNorm.reduce((acc, c) => acc + c.scores[key], 0) / peersNorm.length; }
+        
+        const candidateTotal = Object.values(candidateNorm.scores).reduce((a, b) => a + b, 0);
+        const peerTotalAvg = Object.values(peerAverages).reduce((a, b) => a + b, 0);
+
+        const chartOptions = { plugins: { legend: { labels: { color: '#e2e8f0' } } }, scales: { x: { ticks: { color: '#a0aec0' }, grid: { color: '#4a5568' } }, y: { ticks: { color: '#a0aec0' }, grid: { color: '#4a5568' } } } };
+        const radarOptions = { plugins: { legend: { labels: { color: '#e2e8f0' } } }, scales: { r: { suggestedMin: 0, suggestedMax: 100, pointLabels: { color: '#a0aec0', font:{size:14} }, grid: { color: '#4a5568' }, angleLines: { color: '#4a5568' } } } };
+        const rankChartOptions = { indexAxis: 'y', plugins: { legend: { display: false } }, scales: { x: { ticks: { color: '#a0aec0' }, grid: { color: '#4a5568' } }, y: { ticks: { color: '#a0aec0' }, grid: { color: '#2d3748' } } } };
+
+        charts.overallScoreChart = new Chart(document.getElementById('overallScoreChart').getContext('2d'), { type: 'bar', data: { labels: ['Overall Score'], datasets: [{ label: gameState.candidateName, data: [candidateTotal], backgroundColor: 'rgb(72, 187, 120)' }, { label: 'Peer Average', data: [peerTotalAvg], backgroundColor: 'rgb(74, 85, 104)' }] }, options: chartOptions });
+        charts.competencyComparisonChart = new Chart(document.getElementById('competencyComparisonChart').getContext('2d'), { type: 'radar', data: { labels: competencyLabels, datasets: [ { label: gameState.candidateName, data: Object.values(candidateNorm.scores), backgroundColor: 'rgba(72, 187, 120, 0.2)', borderColor: 'rgb(72, 187, 120)', borderWidth: 2 }, { label: 'Peer Average', data: Object.values(peerAverages), backgroundColor: 'rgba(113, 128, 150, 0.2)', borderColor: 'rgb(113, 128, 150)', borderWidth: 2 } ] }, options: radarOptions });
+
+        const rankingsGrid = document.getElementById('rankings-grid');
+        rankingsGrid.innerHTML = ''; // Clear previous rankings
+        for (const key in maxScores) {
+            const competencyName = key.charAt(0).toUpperCase() + key.slice(1).replace(/([A-Z])/g, ' $1').trim();
+            rankingsGrid.innerHTML += `<div class="dashboard-card p-4 rounded-xl"><h4 class="font-semibold text-center mb-2 text-gray-300">${competencyName}</h4><canvas id="${key}Chart"></canvas><p id="${key}Rank" class="text-center font-bold mt-2 text-green-400"></p></div>`;
+        }
+
+        for (const key in maxScores) {
+            const chartId = `${key}Chart`;
+            const rankId = `${key}Rank`;
+            const sorted = [...normalizedData].sort((a, b) => b.scores[key] - a.scores[key]);
+            const rank = sorted.findIndex(c => c.name === gameState.candidateName) + 1;
+            document.getElementById(rankId).innerText = `Rank: ${rank} of ${normalizedData.length}`;
+            charts[chartId] = new Chart(document.getElementById(chartId).getContext('2d'), { type: 'bar', data: { labels: sorted.map(c => c.name.split(' ')[0]), datasets: [{ label: 'Score', data: sorted.map(c => c.scores[key]), backgroundColor: sorted.map(c => c.name === gameState.candidateName ? 'rgb(72, 187, 120)' : 'rgb(74, 85, 104)') }] }, options: rankChartOptions });
+        }
+    }
+
+    function showCustomAlert(message) {
+        const alertBox = document.createElement('div');
+        alertBox.style.cssText = 'position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background-color: #f8d7da; color: #721c24; padding: 15px 25px; border-radius: 8px; z-index: 100;';
+        alertBox.textContent = message;
+        document.body.appendChild(alertBox);
+        setTimeout(() => { document.body.removeChild(alertBox); }, 3000);
+    }
+
+    function openModal() { modal.classList.remove('hidden'); setTimeout(() => { modalContent.classList.remove('scale-95', 'opacity-0'); modalContent.classList.add('scale-100', 'opacity-100'); }, 50); }
+    function closeModal() { modalContent.classList.add('scale-95', 'opacity-0'); setTimeout(() => { modal.classList.add('hidden'); modalContent.innerHTML = ''; }, 200); }
+    </script>
+
+</body>
+</html>
